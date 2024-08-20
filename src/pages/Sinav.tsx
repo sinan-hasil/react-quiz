@@ -2,13 +2,14 @@ import { useState } from "react";
 import { Button, Card, Container } from "react-bootstrap";
 import "./css/sinav.css"
 
-interface QuizType {
+export interface QuizType {
   question: string;
   options: string[];
   answer: string;
 }
 
-const quizData: QuizType[] = [
+// eslint-disable-next-line react-refresh/only-export-components
+export const quizData: QuizType[] = [
   {
     question: "React kim tarafından çıkarılmıştır?",
     options: ["Bill Gatest", "Facebook", "Elon Musk", "Stephen Hawkink"],

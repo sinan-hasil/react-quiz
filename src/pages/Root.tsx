@@ -15,7 +15,7 @@ const Root = () => {
                 </div>
 
                 <div className="nav-btn">
-                    <Nav.Link as={Link} to={""}>
+                    <Nav.Link as={Link} to={"/login"}>
                         <Button variant="danger">Giriş Yap</Button>
                     </Nav.Link>
                 </div>

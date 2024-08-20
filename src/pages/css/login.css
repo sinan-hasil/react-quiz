@@ -1,0 +1,29 @@
+.login {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
+}
+.login .login-button {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #dc3545;
+  border-radius: 7px;
+}
+.login .login-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.login .login-body .row {
+  margin-top: 30px;
+}
+.login .question-input .why-question {
+  margin-bottom: 20px;
+}
+.login .question-input .why-options {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}/*# sourceMappingURL=login.css.map */
