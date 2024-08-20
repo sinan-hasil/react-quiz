@@ -1,0 +1,13 @@
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-container .logo img {
+  width: 70px;
+  height: 70px;
+}
+.nav-container .nav-btn {
+  display: flex;
+  gap: 20px;
+}/*# sourceMappingURL=root.css.map */

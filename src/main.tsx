@@ -4,12 +4,19 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import { Root } from './pages';
+import { Mainpage, Root } from './pages';
+import "bootstrap/dist/css/bootstrap.min.css"
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />
+    element: <Root />,
+    children: [
+      {
+        index: true,
+        element: <Mainpage />
+      }
+    ]
   }
 ])
 
