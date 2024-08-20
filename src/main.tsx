@@ -4,7 +4,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import { Mainpage, Root } from './pages';
+import { Mainpage, Root, Sinav } from './pages';
 import "bootstrap/dist/css/bootstrap.min.css"
 
 const router = createBrowserRouter([
@@ -15,6 +15,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Mainpage />
+      },
+      {
+        path: "/sinav",
+        element: <Sinav />
       }
     ]
   }

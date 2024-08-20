@@ -1,0 +1,13 @@
+.card{
+    height: 70vh !important;
+    .card-body{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .card-footer{
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+    }
+}
