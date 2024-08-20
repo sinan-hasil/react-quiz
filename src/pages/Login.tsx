@@ -6,13 +6,20 @@ import {
   Form,
   Nav,
   Row,
+  Table,
 } from "react-bootstrap";
 import "./css/login.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sinav, { quizData, QuizType } from "./Sinav";
 import { Link } from "react-router-dom";
 
-const teacherPassword = "yazilim.xyz";
+interface StudentScoreType {
+  name: string;
+  surname: string;
+  score: number;
+}
+
+const teacherPassword = "asd";
 const studentPassword = "sinan";
 
 const Login = () => {
@@ -23,6 +30,10 @@ const Login = () => {
   const [newQuestion, setNewQuestion] = useState<string>("");
   const [newOptions, setNewOptions] = useState<string[]>(["", "", "", ""]);
   const [newAnswer, setNewAnswer] = useState<string>("");
+  const [studentScores, setStudentScores] = useState<StudentScoreType[]>([]);
+  const [studentName, setStudentName] = useState<string>("");
+  const [studentSurname, setStudentSurname] = useState<string>("");
+
 
   const handleLogin = () => {
     if (teacher && password === teacherPassword) {
@@ -41,21 +52,30 @@ const Login = () => {
   };
 
   const handleNewQuestion = () => {
-    const newQuestionData: QuizType = {
-      question: newQuestion,
-      options: newOptions,
-      answer: newAnswer,
-    };
-    quizData.push(newQuestionData);
-    alert("Yeni soru eklendi!");
-    setNewQuestion("");
-    setNewOptions(["", "", "", ""]);
-    setNewAnswer("");
+    if (newQuestion && newOptions.every((opt) => opt) && newAnswer) {
+      const newQuestionData: QuizType = {
+        question: newQuestion,
+        options: newOptions,
+        answer: newAnswer,
+      };
+
+      const updatedQuizData = [...quizData, newQuestionData];
+
+      localStorage.setItem("quizData", JSON.stringify(updatedQuizData));  
+       
+      quizData.push(newQuestionData);
+      alert("Yeni soru eklendi!");
+      setNewQuestion("");
+      setNewOptions(["", "", "", ""]);
+      setNewAnswer("");
+    } else {
+      alert("Lütfen tüm alanları doldurun.");
+    }
   };
 
   const handleBeforeLogin = () => {
-    setLogin(false)
-  }
+    setLogin(false);
+  };
 
   const handleStudent = () => {
     setStudent(true);
@@ -65,6 +85,23 @@ const Login = () => {
   const handleTeacher = () => {
     setTeacher(true);
     setStudent(false);
+  };
+
+  useEffect(() => {    
+    const savedScore = localStorage.getItem("studentScores");
+    if (savedScore) {
+      setStudentScores(JSON.parse(savedScore));
+    }
+  }, []);
+
+  const saveScore = (name: string, surname: string, score: number) => {
+    if (name && surname) {
+      const newScores = [...studentScores, { name, surname, score }];
+      setStudentScores(newScores);
+      localStorage.setItem("studentScores", JSON.stringify(newScores));
+    } else {
+      alert("Lütfen öğrenci adı ve soyadı girin.");
+    }
   };
 
   return (
@@ -119,11 +156,19 @@ const Login = () => {
                 <Row>
                   <Col>
                     <small>*Adınız</small>
-                    <Form.Control type="text" />
+                    <Form.Control
+                     type="text"
+                     value={studentName}
+                     onChange={(e) => setStudentName(e.target.value)}
+                      />
                   </Col>
                   <Col>
                     <small>*Soyadınız</small>
-                    <Form.Control type="text" />
+                    <Form.Control
+                     type="text"
+                     value={studentSurname}
+                     onChange={(e) => setStudentSurname(e.target.value)}
+                     />
                   </Col>
                 </Row>
                 <div>
@@ -144,46 +189,84 @@ const Login = () => {
           </div>
         </div>
       ) : student ? (
-        <Sinav />
+        <Sinav
+         saveScore={saveScore}
+         studentName={studentName}
+         studentSurname={studentSurname}
+         />
       ) : (
-        <div className="question-input">
-          <div className="why-question">
-            <small>*Soruyu Giriniz</small>
-            <FloatingLabel controlId="floatingTextarea2" label="">
+        <div className="teacher-panel">
+          <div className="question-input">
+            <div className="why-question">
+              <small>*Soruyu Giriniz</small>
+              <FloatingLabel controlId="floatingTextarea2" label="">
+                <Form.Control
+                  as="textarea"
+                  value={newQuestion}
+                  onChange={(e) => setNewQuestion(e.target.value)}
+                  style={{ height: "100px", width: "950px" }}
+                />
+              </FloatingLabel>
+            </div>
+            <div className="why-options">
+              <Row>
+                {newOptions.map((item, index) => (
+                  <Col xs={6} key={index}>
+                    <small>*{index + 1}. Şık</small>
+                    <Form.Control
+                      type="text"
+                      value={item}
+                      onChange={(e) =>
+                        handleOptionChange(index, e.target.value)
+                      }
+                    />
+                  </Col>
+                ))}
+              </Row>
+            </div>
+            <div className="why-answer mt-3">
+              <small>*Cevap</small>
               <Form.Control
-                as="textarea"
-                value={newQuestion}
-                onChange={(e) => setNewQuestion(e.target.value)}
-                style={{ height: "100px", width: "950px" }}
+                type="text"
+                value={newAnswer}
+                onChange={(e) => setNewAnswer(e.target.value)}
               />
-            </FloatingLabel>
+            </div>
+            <Button
+              variant="danger"
+              className="w-100 mt-3"
+              onClick={handleNewQuestion}
+            >
+              Ekle
+            </Button>
+            <Nav.Link
+              as={Link}
+              to={"/login"}
+              className="text-end mt-3"
+              onClick={handleBeforeLogin}
+            >
+              geri dön
+            </Nav.Link>
           </div>
-          <div className="why-options">
-            <Row>
-              {newOptions.map((item, index) => (
-                <Col xs={6} key={index}>
-                  <small>*{index + 1}. Şık</small>
-                  <Form.Control
-                    type="text"
-                    value={item}
-                    onChange={(e) => handleOptionChange(index, e.target.value)}
-                  />
-                </Col>
+
+          <Table striped bordered hover variant="danger">
+            <thead>
+              <tr>
+                <th>Öğrenci İsmi</th>
+                <th>Öğrenci Soyismi</th>
+                <th>Öğrenci Puanı</th>
+              </tr>
+            </thead>
+            <tbody>            
+              {studentScores.map((score, index) => (
+                <tr key={index}> 
+                  <td>{score.name}</td>                 
+                  <td>{score.surname}</td>                 
+                  <td>{score.score}</td>
+                </tr>
               ))}
-            </Row>
-          </div>
-          <div className="why-answer mt-3">
-            <small>*Cevap</small>
-            <Form.Control
-              type="text"
-              value={newAnswer}
-              onChange={(e) => setNewAnswer(e.target.value)}
-            />
-          </div>
-          <Button variant="danger" className="w-100 mt-3" onClick={handleNewQuestion}>
-            Ekle
-          </Button>
-          <Nav.Link as={Link} to={"/login"} className="text-end mt-3" onClick={handleBeforeLogin}>geri dön</Nav.Link>
+            </tbody>
+          </Table>
         </div>
       )}
     </Container>

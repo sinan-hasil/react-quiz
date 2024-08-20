@@ -19,10 +19,14 @@
 .login .login-body .row {
   margin-top: 30px;
 }
-.login .question-input .why-question {
+.login .teacher-panel {
+  display: flex;
+  flex-direction: column;
+}
+.login .teacher-panel .question-input .why-question {
   margin-bottom: 20px;
 }
-.login .question-input .why-options {
+.login .teacher-panel .question-input .why-options {
   display: flex;
   flex-direction: column;
   gap: 20px;

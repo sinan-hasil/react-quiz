@@ -19,14 +19,18 @@
       }
     }
   
-    .question-input{
-      .why-question{
-          margin-bottom: 20px;
-      }
-      .why-options{
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
+    .teacher-panel{
+      display: flex;
+      flex-direction: column;
+      .question-input{
+        .why-question{
+            margin-bottom: 20px;
+        }
+        .why-options{
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
       }
     }
   }
