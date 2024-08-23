@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button, Card, Container } from "react-bootstrap";
 import "./css/sinav.css";
+import JSConfetti from "js-confetti";
 
 export interface QuizType {
   question: string;
@@ -45,9 +46,23 @@ const Sinav = ({ saveScore, studentName, studentSurname }: SinavProps) => {
   const [score, setScore] = useState<number>(0);
   const [showScore, setShowScore] = useState<boolean>(false);
 
+  const confetti = () => {
+    const jsConfetti = new JSConfetti();
+    jsConfetti.addConfetti();
+  };
+
   const isTrueAnswer = (selectedAnswer: string) => {
     if (selectedAnswer === quizData[currentQuestion].answer) {
-      setScore(score + 20);
+      setScore((prevScore) => {
+        const newScore = prevScore + 20;
+        
+        // Eğer yeni puan 100 ise konfeti patlat
+        if (newScore === 100) {
+          confetti();
+        }
+
+        return newScore;
+      });
     }
 
     const nextQuestion = currentQuestion + 1;
@@ -55,40 +70,31 @@ const Sinav = ({ saveScore, studentName, studentSurname }: SinavProps) => {
       setCurrentQuestion(nextQuestion);
     } else {
       setShowScore(true);
-      saveScore(studentName, studentSurname, score)
+      saveScore(studentName, studentSurname, score);
     }
   };
+
   return (
     <>
       <Container>
         {showScore ? (
           <div className="score-div">
             <Card className="score-card text-center" style={{ width: "18rem" }}>
-              <Card.Body className="score-card-body">
-                <Card.Title>Sınav Puanınız</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted">
-                  {score}
-                </Card.Subtitle>
-                <Card.Text>
-                  {score < 50 ? (
-                    <>
-                      <h4>Tekrar Deneyiniz</h4>
-                    </>
-                  ) : score >= 50 ? (
-                    <>
-                      <h4>Geçti</h4>
-                    </>
-                  ) : score >= 75 ? (
-                    <>
-                      <h4>İyi</h4>
-                    </>
-                  ) : (
-                    <>
-                      <h4>Pek İyi</h4>
-                    </>
-                  )}
-                </Card.Text>
-              </Card.Body>
+              <Card.Title>Sınav Puanınız</Card.Title>
+              <Card.Subtitle className="mb-2 text-muted">
+                {score}
+              </Card.Subtitle>
+              <Card.Text>
+                {score < 50 ? (
+                  <h4>Tekrar Deneyiniz</h4>
+                ) : score < 75 ? (
+                  <h4>Geçti</h4>
+                ) : score < 90 ? (
+                  <h4>İyi</h4>
+                ) : (
+                  <h4>Pek İyi</h4>
+                )}
+              </Card.Text>
             </Card>
           </div>
         ) : (
@@ -102,15 +108,11 @@ const Sinav = ({ saveScore, studentName, studentSurname }: SinavProps) => {
               </Card.Text>
             </Card.Body>
             <Card.Footer className="question-card-footer text-muted">
-              {quizData[currentQuestion].options.map((item) => {
-                return (
-                  <>
-                    <Button variant="dark" onClick={() => isTrueAnswer(item)}>
-                      {item}
-                    </Button>
-                  </>
-                );
-              })}
+              {quizData[currentQuestion].options.map((item, index) => (
+                <Button key={index} variant="dark" onClick={() => isTrueAnswer(item)}>
+                  {item}
+                </Button>
+              ))}
             </Card.Footer>
           </Card>
         )}
