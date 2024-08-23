@@ -56,7 +56,6 @@ const Sinav = ({ saveScore, studentName, studentSurname }: SinavProps) => {
       setScore((prevScore) => {
         const newScore = prevScore + 20;
         
-        // Eğer yeni puan 100 ise konfeti patlat
         if (newScore === 100) {
           confetti();
         }
